@@ -39,24 +39,29 @@ class FreezeTestCase(unittest.TestCase):
 
         freeze(self.db['weather'].all(), format='csv', filename='weather.csv', prefix=self.d)
         path = os.path.join(self.d, 'weather.csv')
+
         if PY3:
-            fh = open(path, 'rt', encoding='utf8', newline='')
+            kwargs = dict(encoding='utf8', newline='')
+            mode = 'rt'
         else:
-            fh = open(path, 'rU')
-        rows = list(reader(fh))
-        keys = rows[0]
-        if not PY3:
-            keys = [k.decode('utf8') for k in keys]
-        for i, d1 in enumerate(TEST_DATA):
-            d2 = dict(zip(keys, rows[i + 1]))
-            for k in d1.keys():
-                v2 = d2[k]
-                if not PY3:
-                    v2 = v2.decode('utf8')
-                v1 = value_to_str(d1[k])
-                if not isinstance(v1, text_type):
-                    if isinstance(v1, binary_type):
-                        v1 = text_type(v1, encoding='utf8')
-                    else:
-                        v1 = '%s' % v1
-                self.assertEqual(v2, v1)
+            kwargs = {}
+            mode = 'rU'
+
+        with open(path, mode, **kwargs) as fh:
+            rows = list(reader(fh))
+            keys = rows[0]
+            if not PY3:
+                keys = [k.decode('utf8') for k in keys]
+            for i, d1 in enumerate(TEST_DATA):
+                d2 = dict(zip(keys, rows[i + 1]))
+                for k in d1.keys():
+                    v2 = d2[k]
+                    if not PY3:
+                        v2 = v2.decode('utf8')
+                    v1 = value_to_str(d1[k])
+                    if not isinstance(v1, text_type):
+                        if isinstance(v1, binary_type):
+                            v1 = text_type(v1, encoding='utf8')
+                        else:
+                            v1 = '%s' % v1
+                    self.assertEqual(v2, v1)
