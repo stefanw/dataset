@@ -29,9 +29,9 @@ class FreezeTestCase(unittest.TestCase):
         from dataset.freeze.app import freeze
 
         freeze(self.db['weather'].all(), format='csv', filename='wäther.csv'.encode('utf8'), prefix=self.d)
-        self.assert_(os.path.exists(os.path.join(self.d, 'wäther.csv')))
+        self.assertTrue(os.path.exists(os.path.join(self.d, 'wäther.csv')))
         freeze(self.db['weather'].all(), format='csv', filename='wäther.csv', prefix=self.d)
-        self.assert_(os.path.exists(os.path.join(self.d, 'wäther.csv')))
+        self.assertTrue(os.path.exists(os.path.join(self.d, 'wäther.csv')))
 
     def test_freeze_csv(self):
         from dataset.freeze.app import freeze
