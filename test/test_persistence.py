@@ -122,7 +122,7 @@ class DatabaseTestCase(unittest.TestCase):
         try:
             with self.db as tx:
                 tx['weather'].insert({'date': datetime(2011, 1, 1), 'temperature': 1, 'place': u'tmp_place'})
-                tx['weather'].insert({'date': True, 'temperature': 'wrong_value', 'place': u'tmp_place'})
+                tx['weather'].insert({'date': 'True', 'temperature': 'wrong_value', 'place': u'tmp_place'})
         except SQLAlchemyError:
             pass
         assert len(self.db['weather']) == init_length
